@@ -1,5 +1,5 @@
 __author__ = 'Pablo Ramos Criado'
-__students__ = 'Nombres_y_Apellidos'
+__students__ = 'Enrique Herranz Acosta y Marta Martín Moreno'
 
 
 from geopy.geocoders import Nominatim
@@ -47,7 +47,11 @@ def getLocationPoint(address: str) -> Point:
     # Devolver un GeoJSON de tipo punto con la latitud y longitud almacenadas.
     # Si no se consiguieron coordenadas, lanzar ValueError: la funcion no puede
     # devolver un punto inventado ni None silenciosamente. Es lo que espera la
-    # prueba test_get_location_point_timeout_failure.
+    # prueba test_get_location_point_timeout_failure.   
+
+    if location is None:
+        raise ValueError("No se pudieron obtener coordenadas")
+    return Point((location.longitude, location.latitude))
 
 class Model:
     """ 
@@ -313,21 +317,44 @@ def initApp(definitions_path: str = "./models.yml", mongodb_uri="mongodb://local
             uri de conexion a la base de datos
         db_name : str
             nombre de la base de datos
-    """
+    """ 
     #TODO
     # Inicializar base de datos
+
+    client = MongoClient(mongodb_uri)
+    db = client[db_name]
+
+    with open(definitions_path) as f:
+        definitions = yaml.safe_load(f)
 
     #TODO
     # Declarar tantas clases modelo colecciones existan en la base de datos
     # Leer el fichero de definiciones de modelos para obtener las colecciones,
     # indices y los atributos admitidos y requeridos para cada una de ellas.
     # Ejemplo de declaracion de modelo para colecion llamada MiModelo
-    scope["MiModelo"] = type("MiModelo", (Model,),{})
+
+    for nombre, definicion in definitions.items():
+        # Traducir las tres claves del YAML a un solo dict {campo: tipo}
+        indexes = {}
+        for campo in definicion.get("unique_indexes", []):
+            indexes[campo] = "unique"
+        for campo in definicion.get("regular_indexes", []):
+            indexes[campo] = "asc"
+        if "location_index" in definicion:
+            indexes[definicion["location_index"]] = "geosphere"
+
+        scope[nombre] = type(nombre, (Model,), {})
+        scope[nombre].init_class(
+            db_collection=db[nombre],
+            indexes=indexes,
+            required_vars=set(definicion["required_vars"]),
+            admissible_vars=set(definicion["admissible_vars"]),
+        )
+
     # La clase se declara en tiempo de ejecucion y queda en scope, que no tiene
     # por que ser el espacio de nombres global: las pruebas le pasan su propio
     # diccionario. Por eso se inicializa a traves de scope y no por su nombre,
     # que ahi todavia no existe.
-    scope["MiModelo"].init_class(db_collection=None, indexes=None, required_vars=None, admissible_vars=None)
 
 if __name__ == '__main__':
     
