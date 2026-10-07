@@ -144,7 +144,8 @@ class Model:
         #TODO
         # Realizar las comprabociones y gestiones necesarias
         # antes de la asignacion.
-
+        if name not in self._required_vars and name not in self._admissible_vars:
+            raise AttributeError("El campo modificado no está permitido")
         # Asigna el valor value a la variable name
         self._data[name] = value
 
@@ -168,15 +169,15 @@ class Model:
         actualiza el documento existente con los nuevos valores del
         modelo.
         """
-        #TODO
-        pass #No olvidar eliminar esta linea una vez implementado
+        #TODO ACTUALIZAR KIKE Y MARTA
+        self._db.insert_one(self._data)
 
     def delete(self) -> None:
         """
         Elimina el modelo de la base de datos
         """
         #TODO
-        pass
+        self._db.delete_one(self._data)
     
     @classmethod
     def find(cls, filter: dict[str, str | dict]) -> Any:
@@ -259,10 +260,14 @@ class Model:
         cls._required_vars = required_vars
         cls._admissible_vars = admissible_vars
         # TODO
+
+        for campo,tipo in indexes.items():
+            if tipo == "geosphere":
+                cls._location_var = campo
         # Recorrer indexes y crear cada índice segun su tipo: 'unique', 'asc'
         # y 'geosphere'. Comparar el tipo por igualdad, no con el operador 'in'.
         # Ojo con el índice geoespacial: save() guarda el GeoJSON Point en
-        # <campo>_loc, luego el índice 2dsphere va sobre <campo>_loc, mientras
+        # <campo>_loc, luego el índice 2dsphere va sobre <c ampo>_loc, mientras
         # que _location_var debe guardar el nombre del campo base.
 
 
