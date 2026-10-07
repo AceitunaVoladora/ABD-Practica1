@@ -120,6 +120,17 @@ class Model:
         # almacenadas en la base de datos en una solo atributo
         # Encapsular los datos en una sola variable facilita la 
         # gestion en metodos como save.
+
+        info_dada = set(kwargs.keys())
+        info_permitida= self._required_vars | self._admissible_vars
+        info_desconocida = info_dada - info_permitida
+        if info_desconocida:
+            raise ValueError("Hay campos que no deberían estar")
+
+        info_faltante = self._required_vars - info_dada
+        if info_faltante:
+            raise ValueError("Te faltan campos obligatorios")
+
         self._data.update(kwargs)
 
     def __setattr__(self, name: str, value: str | dict) -> None:
