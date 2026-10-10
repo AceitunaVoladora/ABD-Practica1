@@ -326,7 +326,7 @@ class ModelCursor:
                 Cursor de pymongo a iterar
         """
         self.model = model_class
-        self.cursor = cursor
+        self.cursor = cursor    
     
     def __iter__(self) -> Generator:
         """
@@ -338,8 +338,9 @@ class ModelCursor:
         """
         while self.cursor.alive:                    #Mientras haya elementos
             document = next(self.cursor)            #Coge el siguiente elemento
-            document.pop("_id", None)               #_id no es considerado un campo permitido cuando justo después se cree la clase
+            idAuxiliar = document.pop("_id", None)               #_id no es considerado un campo permitido cuando justo después se cree la clase
             object_Model = self.model(**document)         #Convierte el documento en un objeto de la misma clase
+            object.__setattr__(object_Model, "_id", idAuxiliar)
             yield object_Model                          #Es como un return, pero permite iterar lo que devuelve
 
 
@@ -400,30 +401,38 @@ if __name__ == '__main__':
     
     # Inicializar base de datos y modelos con initApp
     initApp()
-
-    recinto = Recinto(nombre="Estadio Zapato",direccion="New York, NY",aforo=10000)
-    recinto.save()
-    recinto.aforo= 12000
-    print(recinto.aforo)
-    print(recinto)
+    Recinto._db.delete_many({})
     # Hacer pruebas para comprobar que funciona correctamente el modelo
     #TODO
     # Crear modelo
-
+    recinto = Recinto(nombre="Estadio Zapato",direccion="New York, NY",aforo=10000)
     # Asignar nuevo valor a variable admitida del objeto 
-
+    recinto.aforo= 12000
     # Asignar nuevo valor a variable no admitida del objeto 
-
+    #recinto.comida = 2
     # Guardar
-
+    recinto.save()
     # Asignar nuevo valor a variable admitida del objeto
-
+    recinto.nombre="Estadio Farola"
     # Guardar
-
+    recinto.save()
     # Buscar nuevo documento con find
+    consulta = next(iter(Recinto.find({"nombre": "Estadio Farola"})))
 
+    print("\nNombre:", consulta.nombre)
+    print("Dirección:", consulta.direccion)
+    print("Aforo:", consulta.aforo)
+    print("Coordenadas:", consulta.direccion_loc)
     # Obtener primer documento
+    consulta_total = Recinto.find({})
+    primero = next(iter(consulta_total), None)
 
+    if primero is not None:
+        print("\nNombre:", primero.nombre)
+        print("Dirección:", primero.direccion)
+        print("Aforo:", primero.aforo)
+        print("Coordenadas:", consulta.direccion_loc)
     # Modificar valor de variable admitida
-
+    primero.aforo += 500
     # Guardar
+    primero.save()
