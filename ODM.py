@@ -278,8 +278,17 @@ class Model:
         cls._admissible_vars = admissible_vars
 
         for campo,tipo in indexes.items():
-            if tipo == "geosphere":
+            if tipo == "unique":
+                cls._db.create_index(campo, unique=True)
+
+            elif tipo == "asc":
+                cls._db.create_index(campo, pymongo.ASCENDING)
+
+            elif tipo == "geosphere":
                 cls._location_var = campo
+                cls._db.create_index(campo + "_loc",pymongo.GEOSPHERE)
+                #El campo que tiene _loc no existirá hasta el primer save, pero no da error colocarle un índice antes
+                
         # Recorrer indexes y crear cada índice segun su tipo: 'unique', 'asc'
         # y 'geosphere'. Comparar el tipo por igualdad, no con el operador 'in'.
         # Ojo con el índice geoespacial: save() guarda el GeoJSON Point en
