@@ -110,6 +110,7 @@ class Model:
                 diccionario con los valores de las atributos del modelo
         """
         self._data: dict[str, str | dict | list] = {}
+        self._modified_vars: set[str] = set() #Se inicializa para cuando haya que modificar algo luego
         #TODO
         # Realizar las comprabociones y gestiones necesarias
         # antes de la asignacion.
@@ -148,6 +149,7 @@ class Model:
             raise AttributeError("El campo modificado no está permitido")
         # Asigna el valor value a la variable name
         self._data[name] = value
+        self._modified_vars.add(name) #Para marcar que la hemos  modificado
 
     def __getattr__(self, name: str) -> Any:
         """ Sobreescribe el metodo de acceso a atributos del objeto
@@ -169,8 +171,28 @@ class Model:
         actualiza el documento existente con los nuevos valores del
         modelo.
         """
-        #TODO ACTUALIZAR KIKE Y MARTA
-        self._db.insert_one(self._data)
+        if not hasattr(self, "_id"): #Es decir, comprueba si aún no hay un identificador de Mongo
+            resultado = self._db.insert_one(self._data)
+            super().__setattr__("_id", resultado.inserted_id)
+            #La linea de encima asigna a la varialbe _id ese id que Mongo le ha puesto
+            #Estamos llamando al método de la clase base para que ignores los "filtros" de la nuestra propia
+        else:
+            if self._modified_vars:
+                cambios = {campo: self._data[campo]  for campo in self._modified_vars}
+                #Esto crea un diccionario por cada campo modificado, con su valor nuevo
+                self._db.update_one(
+                    {"_id": self._id},
+                    {"$set": cambios}
+                )
+        self._modified_vars.clear() #Como ya ha sido guardado, se resetean las variables modificadas
+
+        if self._location_var and self._location_var in self._data:
+            direccion = self._data[self._location_var]
+            campo_loc = self._location_var + "_loc"
+
+            if direccion:
+                self._data[campo_loc] = getLocationPoint(direccion) #Creamos un nuevo campo para las coordenadas
+                self._modified_vars.add(campo_loc) #Se añade a modificado porque se ha creado
 
     def delete(self) -> None:
         """
