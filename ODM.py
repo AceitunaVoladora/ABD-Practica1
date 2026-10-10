@@ -35,15 +35,13 @@ def getLocationPoint(address: str) -> Point:
         intentos += 1
         try:
             time.sleep(1)
-            #TODO
             # Es necesario proporcionar un user_agent para utilizar la API
             # Utilizar un nombre aleatorio para el user_agent
-            location = Nominatim(user_agent="Mi-Nombre-Aleatorio").geocode(address)
+            location = Nominatim(user_agent="Kike_Y_Marta").geocode(address)
         except GeocoderTimedOut:
             # Puede lanzar una excepcion si se supera el tiempo de espera
             # Volver a intentarlo
             continue
-    #TODO
     # Devolver un GeoJSON de tipo punto con la latitud y longitud almacenadas.
     # Si no se consiguieron coordenadas, lanzar ValueError: la funcion no puede
     # devolver un punto inventado ni None silenciosamente. Es lo que espera la
@@ -277,18 +275,18 @@ class Model:
         cls._required_vars = required_vars
         cls._admissible_vars = admissible_vars
 
-        for campo,tipo in indexes.items():
+        
+        for campo, tipo in indexes.items():
             if tipo == "unique":
-                cls._db.create_index(campo, unique=True)
-
+                cls._db.create_index([(campo, pymongo.ASCENDING)], unique=True)
             elif tipo == "asc":
-                cls._db.create_index(campo, pymongo.ASCENDING)
-
+                cls._db.create_index([(campo, pymongo.ASCENDING)])
             elif tipo == "geosphere":
                 cls._location_var = campo
-                cls._db.create_index(campo + "_loc",pymongo.GEOSPHERE)
+                cls._db.create_index([(campo + "_loc", pymongo.GEOSPHERE)])
+
                 #El campo que tiene _loc no existirá hasta el primer save, pero no da error colocarle un índice antes
-                
+
         # Recorrer indexes y crear cada índice segun su tipo: 'unique', 'asc'
         # y 'geosphere'. Comparar el tipo por igualdad, no con el operador 'in'.
         # Ojo con el índice geoespacial: save() guarda el GeoJSON Point en
@@ -401,15 +399,13 @@ def initApp(definitions_path: str = "./models.yml", mongodb_uri="mongodb://local
 if __name__ == '__main__':
     
     # Inicializar base de datos y modelos con initApp
-    #TODO
     initApp()
 
-    #Ejemplo
-    m = MiModelo(nombre="Pablo", apellido="Ramos", edad=18)
-    m.save()
-    m.nombre="Pedro"
-    print(m.nombre)
-
+    recinto = Recinto(nombre="Estadio Zapato",direccion="New York, NY",aforo=10000)
+    recinto.save()
+    recinto.aforo= 12000
+    print(recinto.aforo)
+    print(recinto)
     # Hacer pruebas para comprobar que funciona correctamente el modelo
     #TODO
     # Crear modelo
