@@ -111,7 +111,7 @@ class Model:
         """
         self._data: dict[str, str | dict | list] = {}
         self._modified_vars: set[str] = set() #Se inicializa para cuando haya que modificar algo luego
-        #TODO
+        
         # Realizar las comprabociones y gestiones necesarias
         # antes de la asignacion.
 
@@ -142,9 +142,6 @@ class Model:
         if name in self._internal_vars:
             super().__setattr__(name, value)
             return
-        #TODO
-        # Realizar las comprabociones y gestiones necesarias
-        # antes de la asignacion.
         if name not in self._required_vars and name not in self._admissible_vars:
             raise AttributeError("El campo modificado no está permitido")
         # Asigna el valor value a la variable name
@@ -198,7 +195,6 @@ class Model:
         """
         Elimina el modelo de la base de datos
         """
-        #TODO
         self._db.delete_one(self._data)
     
     @classmethod
@@ -217,8 +213,6 @@ class Model:
             ModelCursor
                 cursor de modelos
         """ 
-        #TODO
-        # cls es el puntero a la clase
         cursor = cls._db.find(filter)
         return ModelCursor(cls,cursor)
 
@@ -282,7 +276,6 @@ class Model:
         cls._db = db_collection
         cls._required_vars = required_vars
         cls._admissible_vars = admissible_vars
-        # TODO
 
         for campo,tipo in indexes.items():
             if tipo == "geosphere":
@@ -339,8 +332,8 @@ class ModelCursor:
         while self.cursor.alive:                    #Mientras haya elementos
             document = next(self.cursor)            #Coge el siguiente elemento
             document.pop("_id", None)               #_id no es considerado un campo permitido cuando justo después se cree la clase
-            object = self.model(**document)         #Convierte el documento en un objeto de la misma clase
-            yield object                            #Es como un return, pero permite iterar lo que devuelve
+            object_Model = self.model(**document)         #Convierte el documento en un objeto de la misma clase
+            yield object_Model                          #Es como un return, pero permite iterar lo que devuelve
 
 
 def initApp(definitions_path: str = "./models.yml", mongodb_uri="mongodb://localhost:27017/", db_name="abd", scope=globals()) -> None:
@@ -360,7 +353,6 @@ def initApp(definitions_path: str = "./models.yml", mongodb_uri="mongodb://local
         db_name : str
             nombre de la base de datos
     """ 
-    #TODO
     # Inicializar base de datos
 
     client = MongoClient(mongodb_uri)
@@ -369,7 +361,6 @@ def initApp(definitions_path: str = "./models.yml", mongodb_uri="mongodb://local
     with open(definitions_path) as f:
         definitions = yaml.safe_load(f)
 
-    #TODO
     # Declarar tantas clases modelo colecciones existan en la base de datos
     # Leer el fichero de definiciones de modelos para obtener las colecciones,
     # indices y los atributos admitidos y requeridos para cada una de ellas.
