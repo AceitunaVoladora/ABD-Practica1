@@ -13,6 +13,7 @@ from pymongo.server_api import ServerApi
 from bson.objectid import ObjectId
 import yaml
 from datetime import datetime
+from bson import json_util
 
 def getLocationPoint(address: str) -> Point:
     """ 
@@ -415,8 +416,10 @@ if __name__ == '__main__':
     
     # Inicializar base de datos y modelos con initApp
     initApp()
+    MODELOS = (Recinto, Artista, Asistente, Evento)
+
     Recinto._db.delete_many({})
-    Arista._db.delete_many({})
+    Artista._db.delete_many({})
     Asistente._db.delete_many({})
     Evento._db.delete_many({})
     # Hacer pruebas para comprobar que funciona correctamente el modelo
@@ -425,18 +428,20 @@ if __name__ == '__main__':
     recinto = Recinto(nombre="Estadio Zapato",direccion="New York, NY",aforo=10000)
     luchork = Artista(nombre="LuchoRK",generos_musicales=["trap", "regeton"],pais_origen="España", anio_inicio_actividad=2022)
     luis = Asistente(nombre="Luis Ojeda",direccion="Bravo Murillo, Las Palmas de Gran Canaria",correo_electronico="luisojeda@gmail.com")
-    evento_lucho = Evento(titulo="LuchoRK - Sordo de un pie", artistas = [luchork._id], recinto = recinto._id, fecha = datetime(2026, 3, 21), hora = "21:00",precio_por_zona={"Pista": 50.0, "Grada baja": 40.0, "Grada alta": 35.0},entradas_vendidas=8500)
     # Asignar nuevo valor a variable admitida del objeto 
     recinto.aforo= 12000
     luchork.anio_inicio_actividad = 2021
     luis.correo_electronico = "luis.oojeda@gmail.com"
-    evento_lucho.fecha = datetime(2026, 4, 21)
     # Asignar nuevo valor a variable no admitida del objeto 
     #recinto.comida = 2
     # Guardar
     recinto.save()
     luchork.save()
     luis.save()
+
+    #Hacemos lo mismo con evento pero mas tarde para poder coger el id de artista y recinto
+    evento_lucho = Evento(titulo="LuchoRK - Sordo de un pie", artistas = [luchork._id], recinto = recinto._id, fecha = datetime(2026, 3, 21), hora = "21:00",precio_por_zona={"Pista": 50.0, "Grada baja": 40.0, "Grada alta": 35.0},entradas_vendidas=8500)
+    evento_lucho.fecha = datetime(2026, 4, 21)
     evento_lucho.save()
     # Asignar nuevo valor a variable admitida del objeto
     recinto.nombre="Estadio Farola"
@@ -491,7 +496,7 @@ if __name__ == '__main__':
     # Guardar
     primeroArtista.save()
 
-    consultaAsistente = next(iter(asistente.find({"nombre": "Luis Ojeda"}))) 
+    consultaAsistente = next(iter(Asistente.find({"nombre": "Luis Ojeda"}))) 
     
     print("\nNombre:", consultaAsistente.nombre)
     print("Correo electronico:", consultaAsistente.correo_electronico)
@@ -502,7 +507,7 @@ if __name__ == '__main__':
     
     if primeroAsistente is not None:
         print("\nNombre:", primeroAsistente.nombre)
-        print("Correo electronico:", primeroAsistente.generos_musicales)
+        print("Correo electronico:", primeroAsistente.correo_electronico)
         print("Direccion:", primeroAsistente.direccion)
 
     # Modificar valor de variable admitida
@@ -536,3 +541,10 @@ if __name__ == '__main__':
     primeroEvento.entradas_vendidas += 50
     # Guardar
     primeroEvento.save()
+
+    for clase in MODELOS:
+        documentos = list(clase._db.find({}))
+        fichero = f"{clase._db.name}.json"
+        with open(fichero, "w", encoding="utf-8") as f:
+            f.write(json_util.dumps(documentos, indent=2, ensure_ascii=False))
+        print(f"  {fichero:16} -> {len(documentos)} documentos")    
