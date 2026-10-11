@@ -122,10 +122,12 @@ class Model:
 
         info_dada = set(kwargs.keys())
         info_permitida= self._required_vars | self._admissible_vars
+
+        #campos no admitidos
         info_desconocida = info_dada - info_permitida
         if info_desconocida:
             raise ValueError("Hay campos que no deberían estar")
-
+        #campos obligatorios q faltan
         info_faltante = self._required_vars - info_dada
         if info_faltante:
             raise ValueError("Te faltan campos obligatorios")
@@ -217,7 +219,7 @@ class Model:
             ModelCursor
                 cursor de modelos
         """ 
-        cursor = cls._db.find(filter)
+        cursor = cls._db.find(filter) #cls ref. a propia clase, como self pero para la clase
         return ModelCursor(cls,cursor)
 
     @classmethod
@@ -428,7 +430,7 @@ if __name__ == '__main__':
     # Guardar
     recinto.save()
     # Buscar nuevo documento con find
-    consulta = next(iter(Recinto.find({"nombre": "Estadio Farola"})))
+    consulta = next(iter(Recinto.find({"nombre": "Estadio Farola"}))) #next pide el primer resultado
 
     print("\nNombre:", consulta.nombre)
     print("Dirección:", consulta.direccion)
