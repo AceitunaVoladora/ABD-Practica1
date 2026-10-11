@@ -1,0 +1,38 @@
+[
+  {
+    "_id": {
+      "$oid": "6acbb639b593ca0f81879d3c"
+    },
+    "nombre": "Rosalía",
+    "generos_musicales": [
+      "pop",
+      "flamenco"
+    ],
+    "pais_origen": "España",
+    "anio_inicio_actividad": 2017
+  },
+  {
+    "_id": {
+      "$oid": "6acbb639b593ca0f81879d3d"
+    },
+    "nombre": "Coldplay",
+    "generos_musicales": [
+      "pop rock",
+      "rock alternativo"
+    ],
+    "pais_origen": "Reino Unido",
+    "anio_inicio_actividad": 1997
+  },
+  {
+    "_id": {
+      "$oid": "6acbb639b593ca0f81879d3e"
+    },
+    "nombre": "Estopa",
+    "generos_musicales": [
+      "rumba",
+      "pop rock"
+    ],
+    "pais_origen": "España",
+    "anio_inicio_actividad": 1999
+  }
+]

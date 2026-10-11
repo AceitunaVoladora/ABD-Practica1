@@ -1,0 +1,81 @@
+[
+  {
+    "_id": {
+      "$oid": "6acbb625b593ca0f81879d36"
+    },
+    "nombre": "Movistar Arena",
+    "direccion": "Avenida de Felipe II, Madrid, España",
+    "aforo": 17000,
+    "zonas": {
+      "Pista": 6000,
+      "Grada baja": 6000,
+      "Grada alta": 5000
+    },
+    "servicios": [
+      "Parking",
+      "Guardarropa",
+      "Bar",
+      "Accesibilidad",
+      "Tienda oficial"
+    ],
+    "direccion_loc": {
+      "type": "Point",
+      "coordinates": [
+        -3.674224,
+        40.423986
+      ]
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6acbb626b593ca0f81879d37"
+    },
+    "nombre": "Palau Sant Jordi",
+    "direccion": "Passeig Olímpic, Barcelona, España",
+    "aforo": 18000,
+    "zonas": {
+      "Pista": 8000,
+      "Grada": 10000
+    },
+    "servicios": [
+      "Guardarropa",
+      "Bar",
+      "Accesibilidad",
+      "Metro"
+    ],
+    "direccion_loc": {
+      "type": "Point",
+      "coordinates": [
+        2.154037,
+        41.361938
+      ]
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6acbb627b593ca0f81879d38"
+    },
+    "nombre": "Estadio de La Cartuja",
+    "direccion": "Camino de los Descubrimientos, Sevilla, España",
+    "aforo": 62000,
+    "zonas": {
+      "Césped": 30000,
+      "Grada": 30000,
+      "VIP": 2000
+    },
+    "servicios": [
+      "Parking",
+      "Bar",
+      "Zona VIP",
+      "Accesibilidad",
+      "Enfermería"
+    ],
+    "direccion_loc": {
+      "type": "Point",
+      "coordinates": [
+        -6.008786,
+        37.39305
+      ]
+    }
+  }
+]

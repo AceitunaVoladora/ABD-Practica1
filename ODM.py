@@ -12,6 +12,7 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from bson.objectid import ObjectId
 import yaml
+from datetime import datetime
 
 def getLocationPoint(address: str) -> Point:
     """ 
@@ -415,20 +416,38 @@ if __name__ == '__main__':
     # Inicializar base de datos y modelos con initApp
     initApp()
     Recinto._db.delete_many({})
+    Arista._db.delete_many({})
+    Asistente._db.delete_many({})
+    Evento._db.delete_many({})
     # Hacer pruebas para comprobar que funciona correctamente el modelo
     
     # Crear modelo
     recinto = Recinto(nombre="Estadio Zapato",direccion="New York, NY",aforo=10000)
+    luchork = Artista(nombre="LuchoRK",generos_musicales=["trap", "regeton"],pais_origen="España", anio_inicio_actividad=2022)
+    luis = Asistente(nombre="Luis Ojeda",direccion="Bravo Murillo, Las Palmas de Gran Canaria",correo_electronico="luisojeda@gmail.com")
+    evento_lucho = Evento(titulo="LuchoRK - Sordo de un pie", artistas = [luchork._id], recinto = recinto._id, fecha = datetime(2026, 3, 21), hora = "21:00",precio_por_zona={"Pista": 50.0, "Grada baja": 40.0, "Grada alta": 35.0},entradas_vendidas=8500)
     # Asignar nuevo valor a variable admitida del objeto 
     recinto.aforo= 12000
+    luchork.anio_inicio_actividad = 2021
+    luis.correo_electronico = "luis.oojeda@gmail.com"
+    evento_lucho.fecha = datetime(2026, 4, 21)
     # Asignar nuevo valor a variable no admitida del objeto 
     #recinto.comida = 2
     # Guardar
     recinto.save()
+    luchork.save()
+    luis.save()
+    evento_lucho.save()
     # Asignar nuevo valor a variable admitida del objeto
     recinto.nombre="Estadio Farola"
+    luchork.generos_musicales = ["trap", "regeton", "bolero"]
+    luis.correo_electronico = "luis_ojeda@gmail.com"
+    evento_lucho.hora = "20:30"
     # Guardar
     recinto.save()
+    luchork.save()
+    luis.save()
+    evento_lucho.save()
     # Buscar nuevo documento con find
     consulta = next(iter(Recinto.find({"nombre": "Estadio Farola"}))) #next pide el primer resultado
 
@@ -445,7 +464,75 @@ if __name__ == '__main__':
         print("Dirección:", primero.direccion)
         print("Aforo:", primero.aforo)
         print("Coordenadas:", consulta.direccion_loc)
+
     # Modificar valor de variable admitida
     primero.aforo += 500
     # Guardar
     primero.save()
+
+    consultaArtista = next(iter(Artista.find({"nombre": "LuchoRK"}))) 
+    
+    print("\nNombre:", consultaArtista.nombre)
+    print("Generos musicales:", consultaArtista.generos_musicales)
+    print("Pais de origen:", consultaArtista.pais_origen)
+    print("Anio de inicio de actividad:", consultaArtista.anio_inicio_actividad)
+    # Obtener primer documento
+    consultaArtista_total = Artista.find({})
+    primeroArtista = next(iter(consultaArtista_total), None)
+    
+    if primeroArtista is not None:
+        print("\nNombre:", primeroArtista.nombre)
+        print("Generos musicales:", primeroArtista.generos_musicales)
+        print("Pais de origen:", primeroArtista.pais_origen)
+        print("Anio de inicio de actividad:", primeroArtista.anio_inicio_actividad)
+
+    # Modificar valor de variable admitida
+    primeroArtista.anio_inicio_actividad = 2020
+    # Guardar
+    primeroArtista.save()
+
+    consultaAsistente = next(iter(asistente.find({"nombre": "Luis Ojeda"}))) 
+    
+    print("\nNombre:", consultaAsistente.nombre)
+    print("Correo electronico:", consultaAsistente.correo_electronico)
+    print("Direccion:", consultaAsistente.direccion)
+    # Obtener primer documento
+    consultaAsistente_total = Asistente.find({})
+    primeroAsistente = next(iter(consultaAsistente_total), None)
+    
+    if primeroAsistente is not None:
+        print("\nNombre:", primeroAsistente.nombre)
+        print("Correo electronico:", primeroAsistente.generos_musicales)
+        print("Direccion:", primeroAsistente.direccion)
+
+    # Modificar valor de variable admitida
+    primeroAsistente.direccion = "Primero de Mayo, Las Palmas de Gran Canaria"
+    # Guardar
+    primeroAsistente.save()
+
+    consultaEvento = next(iter(Evento.find({"titulo": "LuchoRK - Sordo de un pie"}))) 
+    
+    print("\Titulo:", consultaEvento.titulo)
+    print("Artistas:", consultaEvento.artistas)
+    print("Recinto:", consultaEvento.recinto)
+    print("Fecha:", consultaEvento.fecha)
+    print("Hora:", consultaEvento.hora)
+    print("Precio por zona:", consultaEvento.precio_por_zona)
+    print("Entradas vendidas:", consultaEvento.entradas_vendidas)
+    # Obtener primer documento
+    consultaEvento_total = Evento.find({})
+    primeroEvento = next(iter(consultaEvento_total), None)
+    
+    if primeroEvento is not None:
+        print("\Titulo:", consultaEvento.titulo)
+        print("Artistas:", consultaEvento.artistas)
+        print("Recinto:", consultaEvento.recinto)
+        print("Fecha:", consultaEvento.fecha)
+        print("Hora:", consultaEvento.hora)
+        print("Precio por zona:", consultaEvento.precio_por_zona)
+        print("Entradas vendidas:", consultaEvento.entradas_vendidas)
+
+    # Modificar valor de variable admitida
+    primeroEvento.entradas_vendidas += 50
+    # Guardar
+    primeroEvento.save()

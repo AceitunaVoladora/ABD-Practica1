@@ -1,0 +1,64 @@
+[
+  {
+    "_id": {
+      "$oid": "6acbb63ab593ca0f81879d44"
+    },
+    "nombre": "Lucía Fernández",
+    "direccion": "Gran Vía, Madrid, España",
+    "correo_electronico": "lucia.fernandez@example.com",
+    "fecha_alta": {
+      "$date": "2024-01-10T00:00:00Z"
+    },
+    "preferencias_genero_musical": [
+      "pop",
+      "flamenco"
+    ],
+    "direccion_loc": {
+      "type": "Point",
+      "coordinates": [
+        -3.707037,
+        40.420975
+      ]
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6acbb63cb593ca0f81879d45"
+    },
+    "nombre": "Javier Ortega",
+    "direccion": "Passeig de Gràcia, Barcelona, España",
+    "correo_electronico": "javier.ortega@example.com",
+    "fecha_alta": {
+      "$date": "2025-05-02T00:00:00Z"
+    },
+    "preferencias_genero_musical": [
+      "rock alternativo",
+      "pop rock"
+    ],
+    "direccion_loc": {
+      "type": "Point",
+      "coordinates": [
+        2.161064,
+        41.395279
+      ]
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6acbb63cb593ca0f81879d46"
+    },
+    "nombre": "Carmen Ruiz",
+    "correo_electronico": "carmen.ruiz@example.com",
+    "fecha_alta": {
+      "$date": "2026-02-14T00:00:00Z"
+    },
+    "direccion": "Avenida de la Constitución, Sevilla, España",
+    "direccion_loc": {
+      "type": "Point",
+      "coordinates": [
+        -5.99401,
+        37.385607
+      ]
+    }
+  }
+]
