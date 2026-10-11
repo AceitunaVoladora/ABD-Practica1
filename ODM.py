@@ -166,8 +166,18 @@ class Model:
         actualiza el documento existente con los nuevos valores del
         modelo.
         """
+
+        if self._location_var and self._location_var in self._data: #Es decir, si el Modelo tiene un atributo de dirección
+                    direccion = self._data[self._location_var]
+                    campo_loc = self._location_var + "_loc"
+
+                    #Obtendremos las coordenadas solo si es la primera vez que se guarda, o si la dirección ha sido modificada
+                    if direccion and (not hasattr(self, "_id") or self._location_var in self._modified_vars):
+                        self._data[campo_loc] = getLocationPoint(direccion) #Creamos un nuevo campo para las coordenadas
+                        self._modified_vars.add(campo_loc) #Se añade a modificado porque se ha creado
+
         if not hasattr(self, "_id"): #Es decir, comprueba si aún no hay un identificador de Mongo
-            resultado = self._db.insert_one(self._data)
+            resultado = self._db.insert_one(dict(self._data)) #Con dict() le paso una copia, para que no modifique mi _data metiendo un ObjectId
             super().__setattr__("_id", resultado.inserted_id)
             #La linea de encima asigna a la varialbe _id ese id que Mongo le ha puesto
             #Estamos llamando al método de la clase base para que ignores los "filtros" de la nuestra propia
@@ -181,19 +191,15 @@ class Model:
                 )
         self._modified_vars.clear() #Como ya ha sido guardado, se resetean las variables modificadas
 
-        if self._location_var and self._location_var in self._data:
-            direccion = self._data[self._location_var]
-            campo_loc = self._location_var + "_loc"
-
-            if direccion:
-                self._data[campo_loc] = getLocationPoint(direccion) #Creamos un nuevo campo para las coordenadas
-                self._modified_vars.add(campo_loc) #Se añade a modificado porque se ha creado
+        
 
     def delete(self) -> None:
         """
         Elimina el modelo de la base de datos
         """
-        self._db.delete_one(self._data)
+        if hasattr(self, "_id"): #Solo borra si antes ha sido insertado
+            self._db.delete_one({"_id": self._id})
+            object.__delattr__(self, "_id") #Le quita el id para que si se hace save, sepa que tiene que insertar,no actualizar
     
     @classmethod
     def find(cls, filter: dict[str, str | dict]) -> Any:
@@ -283,6 +289,7 @@ class Model:
                 cls._db.create_index([(campo, pymongo.ASCENDING)])
             elif tipo == "geosphere":
                 cls._location_var = campo
+                cls._admissible_vars = cls._admissible_vars | {campo + "_loc"} #Se añade manualmente la direccion_loc, por si no se pone concretamente en el yml
                 cls._db.create_index([(campo + "_loc", pymongo.GEOSPHERE)])
 
                 #El campo que tiene _loc no existirá hasta el primer save, pero no da error colocarle un índice antes
@@ -336,12 +343,16 @@ class ModelCursor:
         Utilizar la funcion next para obtener el siguiente documento del cursor
         Utilizar alive para comprobar si existen mas documentos.
         """
-        while self.cursor.alive:                    #Mientras haya elementos
-            document = next(self.cursor)            #Coge el siguiente elemento
-            idAuxiliar = document.pop("_id", None)               #_id no es considerado un campo permitido cuando justo después se cree la clase
-            object_Model = self.model(**document)         #Convierte el documento en un objeto de la misma clase
-            object.__setattr__(object_Model, "_id", idAuxiliar)
-            yield object_Model                          #Es como un return, pero permite iterar lo que devuelve
+        while self.cursor.alive: #Mientras haya elementos, aunque esto puede ser True sin que haya documentos
+            try:
+                document = next(self.cursor)
+            except StopIteration:
+                break
+  
+            idAuxiliar = document.pop("_id", None)  #_id no es considerado un campo permitido cuando justo después se cree la clase
+            object_Model = self.model(**document)   #Convierte el documento en un objeto de la misma clase
+            object.__setattr__(object_Model, "_id", idAuxiliar) #Le devolvemos el id
+            yield object_Model                       #Es como un return, pero permite iterar lo que devuelve
 
 
 def initApp(definitions_path: str = "./models.yml", mongodb_uri="mongodb://localhost:27017/", db_name="abd", scope=globals()) -> None:
@@ -403,7 +414,7 @@ if __name__ == '__main__':
     initApp()
     Recinto._db.delete_many({})
     # Hacer pruebas para comprobar que funciona correctamente el modelo
-    #TODO
+    
     # Crear modelo
     recinto = Recinto(nombre="Estadio Zapato",direccion="New York, NY",aforo=10000)
     # Asignar nuevo valor a variable admitida del objeto 

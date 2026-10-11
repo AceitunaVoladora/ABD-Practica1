@@ -28,3 +28,49 @@ Recinto:
   regular_indexes:
     - aforo
   location_index: direccion
+
+Artista:
+  required_vars:
+    - nombre
+    - generos_musicales
+  admissible_vars: 
+    - pais_origen
+    - anio_inicio_actividad
+  unique_indexes:
+    - nombre
+  regular_indexes:
+    - generos_musicales
+    - pais_origen
+
+Evento:
+  required_vars:
+    - titulo
+    - artistas
+    - recinto
+    - fecha
+    - hora
+    - precio_por_zona
+  admissible_vars:
+    - entradas_vendidas
+  unique_indexes:
+    - titulo
+  regular_indexes:
+    - artistas
+    - recinto
+    - fecha
+
+Asistente:
+  required_vars:
+    - nombre
+    - correo_electronico
+  admissible_vars:
+    - fecha_alta
+    - direccion
+    - preferencias_genero_musical
+    - direccion_loc
+  unique_indexes:
+    - correo_electronico
+  regular_indexes:
+    - nombre
+    - preferencias_genero_musical
+  location_index: direccion
