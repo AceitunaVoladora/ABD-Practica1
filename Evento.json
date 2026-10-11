@@ -1,76 +1,26 @@
 [
   {
     "_id": {
-      "$oid": "6acbb639b593ca0f81879d40"
+      "$oid": "6acbc98dcfaca94c10b4293d"
     },
-    "titulo": "Coldplay - Noche en Barcelona",
+    "titulo": "LuchoRK - Sordo de un pie",
     "artistas": [
       {
-        "$oid": "6acbb639b593ca0f81879d3d"
+        "$oid": "6acbc98ccfaca94c10b4293b"
       }
     ],
     "recinto": {
-      "$oid": "6acbb626b593ca0f81879d37"
+      "$oid": "6acbc98ccfaca94c10b4293a"
     },
     "fecha": {
-      "$date": "2024-07-20T00:00:00Z"
-    },
-    "hora": "21:00",
-    "precio_por_zona": {
-      "Pista": 120.0,
-      "Grada": 80.0
-    },
-    "entradas_vendidas": 17500
-  },
-  {
-    "_id": {
-      "$oid": "6acbb639b593ca0f81879d41"
-    },
-    "titulo": "Rosalía - Gira Madrid 2025",
-    "artistas": [
-      {
-        "$oid": "6acbb639b593ca0f81879d3c"
-      }
-    ],
-    "recinto": {
-      "$oid": "6acbb625b593ca0f81879d36"
-    },
-    "fecha": {
-      "$date": "2025-03-15T00:00:00Z"
-    },
-    "hora": "21:00",
-    "precio_por_zona": {
-      "Pista": 85.0,
-      "Grada baja": 70.0,
-      "Grada alta": 45.0
-    },
-    "entradas_vendidas": 16800
-  },
-  {
-    "_id": {
-      "$oid": "6acbb639b593ca0f81879d42"
-    },
-    "titulo": "Festival Cartuja 2026: Estopa y Rosalía",
-    "artistas": [
-      {
-        "$oid": "6acbb639b593ca0f81879d3e"
-      },
-      {
-        "$oid": "6acbb639b593ca0f81879d3c"
-      }
-    ],
-    "recinto": {
-      "$oid": "6acbb627b593ca0f81879d38"
-    },
-    "fecha": {
-      "$date": "2026-12-05T00:00:00Z"
+      "$date": "2026-04-21T00:00:00Z"
     },
     "hora": "20:30",
     "precio_por_zona": {
-      "Césped": 60.0,
-      "Grada": 45.0,
-      "VIP": 150.0
+      "Pista": 50.0,
+      "Grada baja": 40.0,
+      "Grada alta": 35.0
     },
-    "entradas_vendidas": 41000
+    "entradas_vendidas": 8550
   }
 ]

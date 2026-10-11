@@ -517,7 +517,7 @@ if __name__ == '__main__':
 
     consultaEvento = next(iter(Evento.find({"titulo": "LuchoRK - Sordo de un pie"}))) 
     
-    print("\Titulo:", consultaEvento.titulo)
+    print("\nTitulo:", consultaEvento.titulo)
     print("Artistas:", consultaEvento.artistas)
     print("Recinto:", consultaEvento.recinto)
     print("Fecha:", consultaEvento.fecha)
@@ -529,7 +529,7 @@ if __name__ == '__main__':
     primeroEvento = next(iter(consultaEvento_total), None)
     
     if primeroEvento is not None:
-        print("\Titulo:", consultaEvento.titulo)
+        print("\nTitulo:", consultaEvento.titulo)
         print("Artistas:", consultaEvento.artistas)
         print("Recinto:", consultaEvento.recinto)
         print("Fecha:", consultaEvento.fecha)
